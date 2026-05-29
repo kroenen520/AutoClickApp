@@ -1,4 +1,4 @@
-name: Android CI
+锘縩ame: Android CI
 
 on:
   push:
@@ -15,7 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: 清理旧缓存
+      - name: Clean Gradle caches
         run: |
           rm -rf ~/.gradle/caches ~/.gradle/wrapper
           rm -rf .gradle
@@ -25,25 +25,31 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: 'gradle'
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          accept-android-sdk-licenses: true   # 鑷姩鍚屾剰璁稿彲锛堝畼鏂瑰弬鏁帮級
 
-      - name: Grant execute permission
+      # 馃憞 鍏抽敭锛氬己鍒朵竴閿悓鎰忔墍鏈夎鍙瘉锛堥槻姝㈡紡缃戯級
+      - name: Force accept all SDK licenses
+        run: yes | sdkmanager --licenses
+
+      - name: Grant execute permission to gradlew
         run: chmod +x gradlew
 
-      - name: 强制无守护进程构建（防卡死）
+      - name: Build Debug APK
         run: |
           ./gradlew assembleDebug \
             --info \
             --stacktrace \
             --no-daemon \
-            --no-parallel \
-            -Dorg.gradle.jvmargs=-Xmx8g -Xms4g \
-            -Dmaven.repo.local=./.gradle/caches/modules-2
+            -Dorg.gradle.jvmargs="-Xmx8g -Xms4g"
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 7
