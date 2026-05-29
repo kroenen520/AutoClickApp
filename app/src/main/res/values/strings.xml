@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">自动点击助手</string>
+    <string name="start_service">启动服务</string>
+    <string name="stop_service">停止服务</string>
+    <string name="accessibility_service_description">自动点击助手需要此服务来执行自动点击操作。应用会基于准星位置进行随机偏移点击。</string>
+</resources>
